@@ -36,6 +36,36 @@ visited_rooms = set()
 player.current_room = world.starting_room
 visited_rooms.add(player.current_room)
 
+mapToPrevious = {
+    's':'n',
+    'n':'s',
+    'w':'e',
+    'e':'w',
+}
+
+
+
+def beginPilgrim(pathTaken, player):
+    currentRoom = player.current_room
+    exits = player.current_room.get_exits()
+    for direction in exits:
+        roomInDirection = currentRoom.get_room_in_direction(direction)
+        if roomInDirection not in visited_rooms:
+            pathTaken.append(direction)
+            player.travel(direction)
+            visited_rooms.add(player.current_room)
+            beginPilgrim(pathTaken, player)
+            previous = mapToPrevious[direction]
+            pathTaken.append(previous)
+            player = Player(currentRoom)
+        
+
+# pathTaken = list()
+beginPilgrim(traversal_path, player)
+
+player = Player(world.starting_room)
+
+
 for move in traversal_path:
     player.travel(move)
     visited_rooms.add(player.current_room)
